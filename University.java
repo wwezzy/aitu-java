@@ -1,89 +1,63 @@
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
 public class University {
-
-    // Attributes (fields)
     private String name;
-    private String city;
-    private int yearFounded;
-    private int totalStudents;
-    private int ranking;
+    // Data Pool: списки хранятся внутри университета
+    private List<Course> courses;
+    private List<Professor> professors;
 
-    // No-argument constructor
-    public University() {
-        this.name = "Unknown University";
-        this.city = "Unknown City";
-        this.yearFounded = 0;
-        this.totalStudents = 0;
-        this.ranking = 0;
-    }
-
-    // Parameterized constructor
-    public University(String name, String city, int yearFounded, int totalStudents, int ranking) {
+    public University(String name) {
         this.name = name;
-        this.city = city;
-        this.yearFounded = yearFounded;
-        this.totalStudents = totalStudents;
-        this.ranking = ranking;
+        this.courses = new ArrayList<>();
+        this.professors = new ArrayList<>();
     }
 
-    // Getters and setters
-    public String getName() {
-        return name;
+    // Методы добавления
+    public void addProfessor(Professor p) {
+        professors.add(p);
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void addCourse(Course c) {
+        courses.add(c);
     }
 
-    public String getCity() {
-        return city;
+    // --- SEARCHING (Поиск) ---
+    public Course findCourseByCode(String code) {
+        for (Course c : courses) {
+            if (c.getCode().equalsIgnoreCase(code)) {
+                return c;
+            }
+        }
+        return null;
     }
 
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public int getYearFounded() {
-        return yearFounded;
-    }
-
-    public void setYearFounded(int yearFounded) {
-        this.yearFounded = yearFounded;
-    }
-
-    public int getTotalStudents() {
-        return totalStudents;
-    }
-
-    public void setTotalStudents(int totalStudents) {
-        this.totalStudents = totalStudents;
-    }
-
-    public int getRanking() {
-        return ranking;
-    }
-
-    public void setRanking(int ranking) {
-        this.ranking = ranking;
-    }
-
-    // Method: increase number of students
-    public void increaseStudents(int amount) {
-        if (amount > 0) {
-            totalStudents = totalStudents + amount;
+    // --- FILTERING (Фильтрация) ---
+    public void printHeavyCourses(int minCredits) {
+        System.out.println("--- Filtering: Courses with >= " + minCredits + " credits ---");
+        for (Course c : courses) {
+            if (c.getCredits() >= minCredits) {
+                System.out.println(c); // Тут сработает toString()
+            }
         }
     }
 
-    // Method: check if university is in top 100
-    public boolean isTopUniversity() {
-        return ranking > 0 && ranking <= 100;
+    // --- SORTING (Сортировка) ---
+    public void sortCoursesByCredits() {
+        // Используем Comparator
+        courses.sort(Comparator.comparingInt(Course::getCredits).reversed());
+        System.out.println("--- Sorted Courses by Credits (Desc) ---");
+        for (Course c : courses) System.out.println(c);
     }
 
-    // Method: print university info
-    public void printInfo() {
-        System.out.println("University: " + name
-                + " in " + city
-                + ", founded in " + yearFounded
-                + ", students: " + totalStudents
-                + ", ranking: " + ranking);
+    public void printAllInfo() {
+        System.out.println("Welcome to " + name);
+        System.out.println("\n--- Professors List ---");
+        for (Professor p : professors) System.out.println(p);
+
+        System.out.println("\n--- Course List ---");
+        for (Course c : courses) System.out.println(c);
     }
 }

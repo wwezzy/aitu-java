@@ -1,69 +1,47 @@
-public class Course {
+import java.util.Objects;
 
-    // Attributes (fields)
+public class Course implements Comparable<Course> {
     private String code;
     private String title;
     private int credits;
-    private int maxStudents;
+    private Professor professor; // Курс ведет профессор
 
-    // No-argument constructor (default values)
-    public Course() {
-        this.code = "UNKNOWN";
-        this.title = "No title";
-        this.credits = 0;
-        this.maxStudents = 0;
-    }
-
-    // Parameterized constructor
-    public Course(String code, String title, int credits, int maxStudents) {
+    public Course(String code, String title, int credits, Professor professor) {
         this.code = code;
         this.title = title;
         this.credits = credits;
-        this.maxStudents = maxStudents;
+        this.professor = professor;
     }
 
-    // Getters and setters
-    public String getCode() {
-        return code;
+    public String getCode() { return code; }
+    public String getTitle() { return title; }
+    public int getCredits() { return credits; }
+    public Professor getProfessor() { return professor; }
+
+    // Требование: Override toString
+    @Override
+    public String toString() {
+        String profName = (professor != null) ? professor.getName() : "No Professor";
+        return String.format("Course %s: %s (%d credits), Taught by: %s", code, title, credits, profName);
     }
 
-    public void setCode(String code) {
-        this.code = code;
+    // Требование: Override equals (сравниваем курсы по коду)
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Course course = (Course) o;
+        return Objects.equals(code, course.code);
     }
 
-    public String getTitle() {
-        return title;
+    @Override
+    public int hashCode() {
+        return Objects.hash(code);
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public int getCredits() {
-        return credits;
-    }
-
-    public void setCredits(int credits) {
-        this.credits = credits;
-    }
-
-    public int getMaxStudents() {
-        return maxStudents;
-    }
-
-    public void setMaxStudents(int maxStudents) {
-        this.maxStudents = maxStudents;
-    }
-
-    // Method: check if course is heavy (many credits)
-    public boolean isHeavyCourse() {
-        return credits >= 5;
-    }
-
-    // Method: print course info
-    public void printInfo() {
-        System.out.println("Course: " + code + " - " + title
-                + ", credits: " + credits
-                + ", max students: " + maxStudents);
+    // Для сортировки по умолчанию
+    @Override
+    public int compareTo(Course other) {
+        return this.code.compareTo(other.code);
     }
 }
