@@ -1,63 +1,58 @@
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.List;
-
+import java.util.ArrayList;
 public class University {
-    private String name;
-    // Data Pool: списки хранятся внутри университета
-    private List<Course> courses;
-    private List<Professor> professors;
+ ArrayList<Person> people;
+ ArrayList<Course> courses;
 
-    public University(String name) {
-        this.name = name;
-        this.courses = new ArrayList<>();
-        this.professors = new ArrayList<>();
+ public University(){
+     this.people = new ArrayList<>();
+     this.courses = new ArrayList<>();
+ }
+ public void addPerson(Person person){
+     this.people.add(person);
+ }
+    public void addCourse(Course course) {
+        this.courses.add(course);
     }
-
-    // Методы добавления
-    public void addProfessor(Professor p) {
-        professors.add(p);
-    }
-
-    public void addCourse(Course c) {
-        courses.add(c);
-    }
-
-    // --- SEARCHING (Поиск) ---
-    public Course findCourseByCode(String code) {
-        for (Course c : courses) {
-            if (c.getCode().equalsIgnoreCase(code)) {
-                return c;
-            }
+ public void printUniversityInfo() {
+        for (Person p : people) {
+            System.out.println(p);
         }
-        return null;
-    }
-
-    // --- FILTERING (Фильтрация) ---
-    public void printHeavyCourses(int minCredits) {
-        System.out.println("--- Filtering: Courses with >= " + minCredits + " credits ---");
+        System.out.println("\n[University Courses]");
         for (Course c : courses) {
-            if (c.getCredits() >= minCredits) {
-                System.out.println(c); // Тут сработает toString()
-            }
+            System.out.println("Title: " + c.getTitle() + ", Credits: " + c.getCredits());
         }
     }
-
-    // --- SORTING (Сортировка) ---
-    public void sortCoursesByCredits() {
-        // Используем Comparator
-        courses.sort(Comparator.comparingInt(Course::getCredits).reversed());
-        System.out.println("--- Sorted Courses by Credits (Desc) ---");
-        for (Course c : courses) System.out.println(c);
+    public void sortPeopleByName() {
+        Collections.sort(people, new Comparator<Person>() {
+            @Override
+            public int compare(Person p1, Person p2) {
+               return p1.getName().compareTo(p2.getName());
+            }
+        });
+        System.out.println("List of people after sorting:");
+    }
+    // 1. Фильтрация: Показываем только студентов
+    public void showOnlyStudents() {
+        System.out.println("\n--- Students Only ---");
+        for (Person p : people) {
+            if (p instanceof Student) {
+                System.out.println(p);
+            }
+        }
     }
 
-    public void printAllInfo() {
-        System.out.println("Welcome to " + name);
-        System.out.println("\n--- Professors List ---");
-        for (Professor p : professors) System.out.println(p);
-
-        System.out.println("\n--- Course List ---");
-        for (Course c : courses) System.out.println(c);
+    // 2. Поиск: Ищем человека по ID
+    public Person findPersonById(int id) {
+        for (Person p : people) {
+            if (p.getId() == id) {
+                return p;
+            }
+        }
+        return null; // Если не нашли
     }
+
+
+
 }

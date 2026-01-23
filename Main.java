@@ -1,34 +1,77 @@
+import java.util.Scanner; // 1. Важный импорт для сканера
+
 public class Main {
     public static void main(String[] args) {
-        // 1. Создаем университет
-        University myUni = new University("Astana IT University");
+        // --- ЧАСТЬ 1: Проверка подключения к базе данных (Assignment 3) ---
+        System.out.println("--- 1. Database Connection Check ---");
+        DB db = new DB();
+        db.connect();
 
-        // 2. Создаем профессоров
-        Professor prof1 = new Professor("Khaimuldin", "k.khaimuldin@aitu.kz", "Computer Science", 10);
-        Professor prof2 = new Professor("Walter White", "w.white@aitu.kz", "Chemistry", 20);
+        // --- ЧАСТЬ 2: Интерактивное создание данных ---
+        Scanner in = new Scanner(System.in); // Создаем сканер
+        System.out.println("\n--- Введите данные нового профессора ---");
 
-        myUni.addProfessor(prof1);
-        myUni.addProfessor(prof2);
+        // Спрашиваем данные по очереди
+        System.out.print("Введите ID: ");
+        int id = in.nextInt();
 
-        // 3. Создаем курсы и привязываем профессоров
-        myUni.addCourse(new Course("SE2324", "Object-Oriented Programming", 5, prof1));
-        myUni.addCourse(new Course("MATH110", "Calculus I", 4, null)); // Пока без профессора
-        myUni.addCourse(new Course("CS101", "Introduction to CS", 6, prof1));
+        System.out.print("Введите Имя (Name): ");
+        String name = in.next();
 
-        // 4. Демонстрация работы (Data Pool logic)
-        myUni.printAllInfo();
+        System.out.print("Введите Фамилию (Surname): ");
+        String surname = in.next();
 
-        System.out.println();
-        // Поиск
-        Course found = myUni.findCourseByCode("SE2324");
-        System.out.println("Search Result: " + (found != null ? found : "Not Found"));
+        System.out.print("Введите Предмет (Subject): ");
+        String subject = in.next();
+        // Совет: вводи предмет одним словом (например, "Math"), чтобы сканер не запутался
 
-        System.out.println();
-        // Фильтрация
-        myUni.printHeavyCourses(5);
+        // Создаем профессора из того, что ввел пользователь
+        Professor prof1 = new Professor(name, surname, id, subject);
 
-        System.out.println();
-        // Сортировка
-        myUni.sortCoursesByCredits();
+        // Сохраняем его в базу данных
+        db.addProfessor(prof1);
+
+        // --- Продолжаем работу с университетом (Assignment 2) ---
+        University aitu = new University();
+
+        // Создаем остальных (студентов пока оставим как есть для примера)
+        Student st1 = new Student("Zara", "Ali", 102, 3.5);
+        Student st2 = new Student("Amir", "K.", 101, 3.8);
+
+        // Создаем курсы
+        Course math = new Course(5, "Mathematics", "Advanced Calculus");
+        Course javaCourse = new Course(6, "Java Programming", "OOP and Streams");
+
+        // Добавляем всех в список университета
+        aitu.addPerson(st1);
+        aitu.addPerson(st2);
+        aitu.addPerson(prof1); // Добавляем того самого профессора, которого ввели
+
+        aitu.addCourse(math);
+        aitu.addCourse(javaCourse);
+
+        // --- ЧАСТЬ 3: Тестирование методов ---
+
+        // 1. Вывод полной информации
+        System.out.println("\n--- 2. Initial List ---");
+        aitu.printUniversityInfo();
+
+        // 2. Сортировка по имени
+        System.out.println("\n--- 3. Sorting by Name ---");
+        aitu.sortPeopleByName();
+        aitu.printUniversityInfo();
+
+        // 3. Фильтрация (только студенты)
+        aitu.showOnlyStudents();
+
+        // 4. Поиск по ID
+        System.out.println("\n--- 5. Searching for ID " + id + " ---");
+        // Ищем того, кого только что добавили
+        Person found = aitu.findPersonById(id);
+        if (found != null) {
+            System.out.println("Found: " + found.getName() + " (" + found.getRole() + ")");
+        } else {
+            System.out.println("User not found.");
+        }
     }
 }
