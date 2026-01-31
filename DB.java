@@ -68,4 +68,30 @@ public class DB {
             System.out.println("Ошибка при чтении: " + e.getMessage());
         }
     }
+    // --- НОВЫЙ МЕТОД ДЛЯ АССАЙМЕНТА 4 ---
+    // Он возвращает список, чтобы сервер мог превратить его в JSON
+    public java.util.List<Professor> getAllProfessorsList() {
+        java.util.List<Professor> professors = new java.util.ArrayList<>();
+        try {
+            Connection conn = connect();
+            Statement stmt = conn.createStatement();
+            String sql = "SELECT * FROM professors";
+            ResultSet rs = stmt.executeQuery(sql);
+
+            while (rs.next()) {
+                // Создаем объект Java из данных базы
+                Professor p = new Professor(
+                        rs.getString("name"),
+                        rs.getString("surname"),
+                        rs.getInt("id"),
+                        rs.getString("subject")
+                );
+                professors.add(p);
+            }
+            conn.close();
+        } catch (SQLException e) {
+            System.out.println("Ошибка: " + e.getMessage());
+        }
+        return professors;
+    }
 }
